@@ -26,7 +26,7 @@
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) AVPlayerLayer *playerLayer;
 
-@property (nonatomic, assign) CGFloat lastShift;
+@property (nonatomic, assign) CGFloat axis;
 
 @property (nonatomic, strong) UIButton *imageButton;
 @property (nonatomic, strong) UIButton *videoButton;
@@ -58,6 +58,8 @@
 - (void)handleMotion {
     motionManager = [[CMMotionManager alloc] init];
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    CGFloat total = 0.4;
+    self.axis = total * 0.5;
     [motionManager startDeviceMotionUpdatesToQueue:queue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
 //        [self logWithMotion:motion];
         
@@ -66,16 +68,18 @@
             return;
         }
         
-        CGFloat total = 0.4;
         CGFloat relativeShift = motion.attitude.quaternion.y;
         dispatch_async(dispatch_get_main_queue(), ^{
             CGRect frame = self.view.bounds;
-            CGFloat shift = total * 0.5 - relativeShift;
+            CGFloat shift = self.axis - relativeShift;
             if (shift < 0) {
                 shift = 0;
+                self.axis = relativeShift;
             } else if (shift > total) {
                 shift = total;
+                self.axis = relativeShift + total;
             }
+            NSLog(@"axis: %f, relativeShift:%f shift: %f", self.axis, relativeShift, shift);
             frame.origin.x = shift / total * (_scaledWidth - kScreenWidth);
             self.view.bounds = frame;
             self.imageButton.frame = CGRectMake(frame.origin.x, kScreenHeight - 50, kScreenWidth * 0.5, 50);
@@ -128,7 +132,8 @@
 - (UIImageView *)imageView {
     if (!_imageView) {
         _imageView = [[UIImageView alloc] init];
-        NSString *urlString = @"http://image.tianjimedia.com/uploadImages/2011/353/PEPS6VMUMC0Z.jpg";
+//        NSString *urlString = @"http://image.tianjimedia.com/uploadImages/2011/353/PEPS6VMUMC0Z.jpg";
+        NSString *urlString = @"http://7xodef.com1.z0.glb.clouddn.com/park_2048.jpg";
         [_imageView sd_setImageWithURL:[NSURL URLWithString:urlString] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if (image) {
                 CGFloat scale = kScreenHeight / image.size.height;
