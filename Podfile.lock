@@ -1,0 +1,17 @@
+PODS:
+  - Reveal-iOS-SDK (1.6.2)
+  - SDWebImage (3.8.1):
+    - SDWebImage/Core (= 3.8.1)
+  - SDWebImage/Core (3.8.1)
+
+DEPENDENCIES:
+  - Reveal-iOS-SDK
+  - SDWebImage
+
+SPEC CHECKSUMS:
+  Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
+  SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
+
+PODFILE CHECKSUM: 725c0d434ade8b85b2857d6ec4c93e80c5494979
+
+COCOAPODS: 1.0.1
